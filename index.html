@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    /* Существующие стили остаются без изменений */
     :root{
       --bg: #ffffff;
       --muted: #9aa0a6;
@@ -34,10 +35,141 @@
       max-width:420px;
     }
 
+    /* НОВЫЕ СТИЛИ ДЛЯ БУРГЕР-МЕНЮ */
+    .header-with-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .header-with-menu h1 {
+      margin: 0;
+      flex: 1;
+    }
+
+    .burger-menu {
+      position: relative;
+    }
+
+    .burger-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 8px;
+    }
+
+    .burger-btn:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .burger-line {
+      width: 18px;
+      height: 2px;
+      background: var(--muted);
+      border-radius: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .burger-btn.active .burger-line:nth-child(1) {
+      transform: rotate(45deg) translate(4px, 4px);
+    }
+
+    .burger-btn.active .burger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger-btn.active .burger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(4px, -4px);
+    }
+
+    .language-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      min-width: 120px;
+    }
+
+    .language-dropdown.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .lang-option:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .lang-option.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .lang-flag {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      object-fit: cover;
+    }
+
+    /* Оверлей для закрытия меню при клике вне его */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      z-index: 999;
+      display: none;
+    }
+
+    .menu-overlay.show {
+      display: block;
+    }
+
+    /* Остальные существующие стили остаются без изменений */
     h1{
       font-size:18px;
       font-weight:600;
-      margin:0 0 14px 0;
       color:#111827;
       text-align:left;
     }
@@ -553,10 +685,34 @@
   </style>
 </head>
 <body>
+  <!-- Оверлей для закрытия меню -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
   <div class="container selection-page">
-    <h1>Приобретение Монет</h1>
+    <!-- НОВЫЙ ЗАГОЛОВОК С БУРГЕР-МЕНЮ -->
+    <div class="header-with-menu">
+      <h1 id="page-title">Приобретение Монет</h1>
+      <div class="burger-menu">
+        <button class="burger-btn" id="burgerBtn">
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+          <div class="burger-line"></div>
+        </button>
+        <div class="language-dropdown" id="languageDropdown">
+          <button class="lang-option active" data-lang="ru">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5IDYiPjxwYXRoIGZpbGw9IiNGQjRGNDciIGQ9Ik0wIDBoOXYySDB6Ii8+PHBhdGggZmlsbD0iIzAwMzQ4QiIgZD0iTTAgMmg5djJIMHoiLz48cGF0aCBmaWxsPSIjRkZGIiBkPSJNMCA0aDl2MkgweiIvPjwvc3ZnPg==" alt="RU" class="lang-flag">
+            Русский
+          </button>
+          <button class="lang-option" data-lang="en">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MCAzMCI+PHBhdGggZmlsbD0iIzAyNDc5NCIgZD0iTTAgMGg2MHYzMEgweiIvPjxwYXRoIGZpbGw9IiNjYTAwMTYiIGQ9Ik0wIDBoNjB2M0gweiIvPjxwYXRoIGZpbGw9IiNjYTAwMTYiIGQ9Ik0wIDloNjB2M0gweiIvPjxwYXRoIGZpbGw9IiNjYTAwMTYiIGQ9Ik0wIDE4aDYwdjNIMHoiLz48cGF0aCBmaWxsPSIjY2EwMDE2IiBkPSJNMCAyN2g2MHYzSDB6Ii8+PHBhdGggZmlsbD0iI2NhMDAxNiIgZD0iTTAgMGg2djMwSDB6Ii8+PHBhdGggZmlsbD0iI2NhMDAxNiIgZD0iTTI0IDBoMTJ2MzBIMjR6Ii8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTI3IDNoNnYyNGgtNnoiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMyAwaDN2MzBIM3oiLz48L3N2Zz4=" alt="EN" class="lang-flag">
+            English
+          </button>
+        </div>
+      </div>
+    </div>
+    
     <div class="balance-box">
-      <div class="balance-label">Баланс</div>
+      <div class="balance-label" id="balance-label">Баланс</div>
       <div class="balance-value">
         <img src="e0b810e57ba3977744f9cfc8fab7975a.jpg" alt="coin" class="coin-img">
         <span>127.951.657</span>
@@ -564,7 +720,7 @@
     </div>
     <input id="username" type="text" class="username-input" placeholder="Введите тег получателя">
     <div>
-      <p class="section-title">Пополнение</p>
+      <p class="section-title" id="replenishment-title">Пополнение</p>
       <div id="packs" class="packs-grid"></div>
     </div>
     <div class="buy-wrap">
@@ -574,30 +730,30 @@
 
   <div class="container loader-container" id="loader1">
     <div class="loader"></div>
-    <div class="loader-text">Обрабатываем ваш выбор...</div>
+    <div class="loader-text" id="loader1-text">Обрабатываем ваш выбор...</div>
   </div>
 
   <div class="container order-summary">
-    <h1>Подтверждение заказа</h1>
+    <h1 id="order-title">Подтверждение заказа</h1>
     <div class="order-details">
       <div class="order-row">
-        <div class="order-label">Получатель</div>
+        <div class="order-label" id="recipient-label">Получатель</div>
         <div class="order-value" id="order-username"></div>
       </div>
       <div class="order-row">
-        <div class="order-label">Пакет монет</div>
+        <div class="order-label" id="coin-pack-label">Пакет монет</div>
         <div class="order-value">
           <img src="e0b810e57ba3977744f9cfc8fab7975a.jpg" alt="coin" class="coin-img">
           <span id="order-coins"></span>
         </div>
       </div>
       <div class="order-row">
-        <div class="order-label">Стоимость</div>
+        <div class="order-label" id="cost-label">Стоимость</div>
         <div class="order-value" id="order-price"></div>
       </div>
     </div>
     <div>
-      <p class="section-title">Способ оплаты</p>
+      <p class="section-title" id="payment-method-label">Способ оплаты</p>
       <div class="payment-methods">
         <div class="payment-method" data-method="visa">
           <img src="png-clipart-visa-logo-credit-card-american-express-jcb-co-ltd-visa-blue-text-thumbnail.png" alt="Visa">
@@ -624,36 +780,88 @@
     <div class="success-check">
       <div class="checkmark"></div>
     </div>
-    <div class="success-title">Покупка успешно завершена!</div>
+    <div class="success-title" id="success-title">Покупка успешно завершена!</div>
     <div class="success-details">
       <div class="success-row">
-        <div class="success-label">Получатель</div>
+        <div class="success-label" id="success-recipient-label">Получатель</div>
         <div class="success-value" id="success-username"></div>
       </div>
       <div class="success-row">
-        <div class="success-label">Пакет монет</div>
+        <div class="success-label" id="success-coin-pack-label">Пакет монет</div>
         <div class="success-value">
           <img src="e0b810e57ba3977744f9cfc8fab7975a.jpg" alt="coin" class="coin-img">
           <span id="success-coins"></span>
         </div>
       </div>
       <div class="success-row">
-        <div class="success-label">Стоимость</div>
+        <div class="success-label" id="success-cost-label">Стоимость</div>
         <div class="success-value" id="success-price"></div>
       </div>
       <div class="success-row">
-        <div class="success-label">Способ оплаты</div>
+        <div class="success-label" id="success-payment-label">Способ оплаты</div>
         <div class="success-value" id="success-payment"></div>
       </div>
       <div class="success-row">
-        <div class="success-label">Статус</div>
-        <div class="success-value" style="color: #10b981;">Успешно</div>
+        <div class="success-label" id="status-label">Статус</div>
+        <div class="success-value" style="color: #10b981;" id="status-value">Успешно</div>
       </div>
     </div>
     <button id="doneBtn" class="done-btn">Готово</button>
   </div>
 
   <script>
+    // СЛОВАРИ ПЕРЕВОДОВ
+    const translations = {
+      ru: {
+        pageTitle: "Приобретение Монет",
+        balance: "Баланс",
+        usernamePlaceholder: "Введите тег получателя",
+        replenishment: "Пополнение",
+        buyBtn: "Пополнение",
+        processing: "Обрабатываем ваш выбор...",
+        orderTitle: "Подтверждение заказа",
+        recipient: "Получатель",
+        coinPack: "Пакет монет",
+        cost: "Стоимость",
+        paymentMethod: "Способ оплата",
+        back: "Назад",
+        confirmPurchase: "Подтвердить покупку",
+        gettingCard: "Получаем карту...",
+        processingPayment: "Обрабатываем платёж...",
+        successTitle: "Покупка успешно завершена!",
+        status: "Статус",
+        statusSuccess: "Успешно",
+        done: "Готово",
+        enterUsername: "Введите тег получателя перед покупкой!",
+        selectPayment: "Пожалуйста, выберите способ оплаты!"
+      },
+      en: {
+        pageTitle: "Coin Purchase",
+        balance: "Balance",
+        usernamePlaceholder: "Enter recipient tag",
+        replenishment: "Top-up",
+        buyBtn: "Top-up",
+        processing: "Processing your selection...",
+        orderTitle: "Order Confirmation",
+        recipient: "Recipient",
+        coinPack: "Coin Package",
+        cost: "Cost",
+        paymentMethod: "Payment Method",
+        back: "Back",
+        confirmPurchase: "Confirm Purchase",
+        gettingCard: "Getting card...",
+        processingPayment: "Processing payment...",
+        successTitle: "Purchase Completed Successfully!",
+        status: "Status",
+        statusSuccess: "Success",
+        done: "Done",
+        enterUsername: "Enter recipient tag before purchase!",
+        selectPayment: "Please select payment method!"
+      }
+    };
+
+    let currentLang = 'ru';
+
     const packs = [
       { coins: 20, price: 0.39 },
       { coins: 70, price: 1.29 },
@@ -672,9 +880,96 @@
     const orderSummary = document.querySelector('.order-summary');
     const loader1 = document.getElementById('loader1');
     const loader2 = document.getElementById('loader2');
-    let loader2Text = document.getElementById('loader2Text'); // Используем let вместо const
+    let loader2Text = document.getElementById('loader2Text');
     const successPage = document.querySelector('.success-page');
     const paymentMethods = document.querySelectorAll('.payment-method');
+
+    // ЭЛЕМЕНТЫ БУРГЕР-МЕНЮ
+    const burgerBtn = document.getElementById('burgerBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const langOptions = document.querySelectorAll('.lang-option');
+
+    // ФУНКЦИИ ДЛЯ БУРГЕР-МЕНЮ
+    function toggleMenu() {
+      const isActive = burgerBtn.classList.contains('active');
+      
+      if (isActive) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    }
+
+    function openMenu() {
+      burgerBtn.classList.add('active');
+      languageDropdown.classList.add('show');
+      menuOverlay.classList.add('show');
+    }
+
+    function closeMenu() {
+      burgerBtn.classList.remove('active');
+      languageDropdown.classList.remove('show');
+      menuOverlay.classList.remove('show');
+    }
+
+    // ФУНКЦИЯ СМЕНЫ ЯЗЫКА
+    function changeLanguage(lang) {
+      currentLang = lang;
+      
+      // Обновляем все текстовые элементы
+      document.getElementById('page-title').textContent = translations[lang].pageTitle;
+      document.getElementById('balance-label').textContent = translations[lang].balance;
+      document.getElementById('username').placeholder = translations[lang].usernamePlaceholder;
+      document.getElementById('replenishment-title').textContent = translations[lang].replenishment;
+      document.getElementById('buyBtn').textContent = translations[lang].buyBtn;
+      document.getElementById('loader1-text').textContent = translations[lang].processing;
+      document.getElementById('order-title').textContent = translations[lang].orderTitle;
+      document.getElementById('recipient-label').textContent = translations[lang].recipient;
+      document.getElementById('coin-pack-label').textContent = translations[lang].coinPack;
+      document.getElementById('cost-label').textContent = translations[lang].cost;
+      document.getElementById('payment-method-label').textContent = translations[lang].paymentMethod;
+      document.getElementById('backBtn').textContent = translations[lang].back;
+      document.getElementById('confirmBtn').textContent = translations[lang].confirmPurchase;
+      document.getElementById('success-title').textContent = translations[lang].successTitle;
+      document.getElementById('success-recipient-label').textContent = translations[lang].recipient;
+      document.getElementById('success-coin-pack-label').textContent = translations[lang].coinPack;
+      document.getElementById('success-cost-label').textContent = translations[lang].cost;
+      document.getElementById('success-payment-label').textContent = translations[lang].paymentMethod;
+      document.getElementById('status-label').textContent = translations[lang].status;
+      document.getElementById('status-value').textContent = translations[lang].statusSuccess;
+      document.getElementById('doneBtn').textContent = translations[lang].done;
+      
+      // Обновляем активную опцию в меню
+      langOptions.forEach(option => {
+        option.classList.remove('active');
+        if (option.dataset.lang === lang) {
+          option.classList.add('active');
+        }
+      });
+
+      // Закрываем меню после выбора языка
+      closeMenu();
+    }
+
+    // ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ БУРГЕР-МЕНЮ
+    burgerBtn.addEventListener('click', toggleMenu);
+
+    langOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const lang = option.dataset.lang;
+        changeLanguage(lang);
+      });
+    });
+
+    menuOverlay.addEventListener('click', closeMenu);
+
+    // Закрытие меню при клике вне его
+    document.addEventListener('click', (e) => {
+      if (!burgerBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+        closeMenu();
+      }
+    });
 
     function formatPrice(p) {
       return p.toFixed(2) + " $";
@@ -724,7 +1019,7 @@
     document.getElementById("buyBtn").addEventListener("click", () => {
       const username = document.getElementById("username").value.trim();
       if (!username) {
-        alert("Введите тег получателя перед покупкой!");
+        alert(translations[currentLang].enterUsername);
         return;
       }
 
@@ -749,51 +1044,44 @@
 
     document.getElementById("confirmBtn").addEventListener("click", () => {
       if (!selectedPaymentMethod) {
-        alert("Пожалуйста, выберите способ оплаты!");
+        alert(translations[currentLang].selectPayment);
         return;
       }
 
       orderSummary.style.display = "none";
       loader2.style.display = "flex";
       
-      // Сбрасываем текст перед началом
-      loader2Text.textContent = "Получаем карту...";
+      // Обновляем текст загрузки в соответствии с языком
+      loader2Text.textContent = translations[currentLang].gettingCard;
       loader2Text.style.opacity = "1";
 
       // Этап 1: Получаем карту (2 секунды)
       setTimeout(() => {
-        // Плавное изменение текста
         loader2Text.style.opacity = "0";
         setTimeout(() => {
-          loader2Text.textContent = "Обрабатываем платёж...";
+          loader2Text.textContent = translations[currentLang].processingPayment;
           loader2Text.style.opacity = "1";
 
           // Этап 2: Обрабатываем платеж (3 секунды)
           setTimeout(() => {
-            // Плавное скрытие текста перед заменой
             loader2Text.style.opacity = "0";
             
             setTimeout(() => {
-              // Заменяем содержимое на галочку
               loader2.innerHTML = `
                 <div class="success-check">
                   <div class="checkmark"></div>
                 </div>
-                <div class="loader-text" style="color:#10b981;font-weight:600;opacity:1">Готово!</div>
+                <div class="loader-text" style="color:#10b981;font-weight:600;opacity:1">${translations[currentLang].done}!</div>
               `;
 
-              // Этап 3: Галочка "Готово!" (1 секунда)
               setTimeout(() => {
-                // Восстанавливаем оригинальную разметку loader2
                 loader2.innerHTML = `
                   <div class="loader"></div>
-                  <div class="loader-text" id="loader2Text">Получаем карту...</div>
+                  <div class="loader-text" id="loader2Text">${translations[currentLang].gettingCard}</div>
                 `;
                 
-                // Обновляем ссылку на текстовый элемент
                 loader2Text = document.getElementById('loader2Text');
                 
-                // Переход на страницу успеха
                 loader2.style.display = "none";
                 successPage.style.display = "flex";
 
@@ -804,11 +1092,11 @@
                 document.getElementById("success-price").textContent = formatPrice(selectedPack.price);
                 document.getElementById("success-payment").textContent =
                   selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
-              }, 1000); // Галочка 1 секунда
-            }, 300); // Задержка перед показом галочки
-          }, 3000); // Обработка платежа 3 секунды
-        }, 300); // Задержка перед показом "Обрабатываем платёж"
-      }, 2000); // Получение карты 2 секунды
+              }, 1000);
+            }, 300);
+          }, 3000);
+        }, 300);
+      }, 2000);
     });
 
     document.getElementById("doneBtn").addEventListener("click", () => {
@@ -818,6 +1106,9 @@
       paymentMethods.forEach(m => m.classList.remove("selected"));
       selectedPaymentMethod = null;
     });
+
+    // Инициализация языка при загрузке
+    changeLanguage('ru');
   </script>
 </body>
 </html>
