@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    /* Существующие стили остаются без изменений */
     :root{
       --bg: #ffffff;
       --muted: #9aa0a6;
@@ -35,7 +34,6 @@
       max-width:420px;
     }
 
-    /* НОВЫЕ СТИЛИ ДЛЯ БУРГЕР-МЕНЮ */
     .header-with-menu {
       position: relative;
       display: flex;
@@ -150,7 +148,6 @@
       object-fit: cover;
     }
 
-    /* Оверлей для закрытия меню при клике вне его */
     .menu-overlay {
       position: fixed;
       top: 0;
@@ -166,7 +163,6 @@
       display: block;
     }
 
-    /* Остальные существующие стили остаются без изменений */
     h1{
       font-size:18px;
       font-weight:600;
@@ -232,6 +228,7 @@
       display:grid;
       grid-template-columns:repeat(2, 1fr);
       gap:10px;
+      margin-bottom: 16px;
     }
 
     @media (min-width: 375px) {
@@ -625,7 +622,156 @@
       z-index: 2;
     }
 
-    /* Улучшения для очень маленьких экранов */
+    /* Стили для модального окна кастомного ввода */
+    .custom-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      padding: 16px;
+    }
+
+    .custom-modal-overlay.show {
+      display: flex;
+    }
+
+    .custom-modal {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .custom-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .custom-input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .custom-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      outline: none;
+      text-align: center;
+      transition: border 0.2s ease;
+    }
+
+    .custom-input:focus {
+      border-color: var(--accent);
+      background: white;
+    }
+
+    .custom-price-display {
+      text-align: center;
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      min-height: 24px;
+    }
+
+    .custom-price-value {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .custom-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .custom-key {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+    }
+
+    .custom-key:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+    }
+
+    .custom-key:active {
+      transform: scale(0.95);
+    }
+
+    .custom-key.delete {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .custom-modal-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .custom-cancel-btn {
+      flex: 1;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .custom-cancel-btn:hover {
+      background: var(--card-bg);
+    }
+
+    .custom-confirm-btn {
+      flex: 1;
+      background: linear-gradient(180deg,var(--accent),#dc2626);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(220,38,38,0.18);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .custom-confirm-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(220,38,38,0.18);
+    }
+
     @media (max-width: 320px) {
       body {
         padding: 12px 8px;
@@ -655,7 +801,6 @@
       }
     }
 
-    /* Улучшения для планшетов и больших экранов */
     @media (min-width: 768px) {
       body {
         padding: 24px;
@@ -675,21 +820,48 @@
       }
     }
 
-    /* Предотвращение масштабирования при фокусе на iOS */
     @media (max-width: 768px) {
       .username-input {
         font-size: 16px;
       }
     }
-
   </style>
 </head>
 <body>
-  <!-- Оверлей для закрытия меню -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
+  <!-- Модальное окно для кастомного ввода -->
+  <div class="custom-modal-overlay" id="customModalOverlay">
+    <div class="custom-modal">
+      <div class="custom-modal-title" id="custom-modal-title">Введите количество монет</div>
+      <div class="custom-input-wrapper">
+        <input type="text" id="customInput" class="custom-input" placeholder="0">
+      </div>
+      <div class="custom-price-display" id="custom-price-display">
+        Стоимость: <span class="custom-price-value" id="custom-price-value">0.00 $</span>
+      </div>
+      <div class="custom-keypad">
+        <div class="custom-key" data-key="1">1</div>
+        <div class="custom-key" data-key="2">2</div>
+        <div class="custom-key" data-key="3">3</div>
+        <div class="custom-key" data-key="4">4</div>
+        <div class="custom-key" data-key="5">5</div>
+        <div class="custom-key" data-key="6">6</div>
+        <div class="custom-key" data-key="7">7</div>
+        <div class="custom-key" data-key="8">8</div>
+        <div class="custom-key" data-key="9">9</div>
+        <div class="custom-key" data-key="000">000</div>
+        <div class="custom-key" data-key="0">0</div>
+        <div class="custom-key delete" data-key="delete">⌫</div>
+      </div>
+      <div class="custom-modal-buttons">
+        <button class="custom-cancel-btn" id="customCancelBtn">Отмена</button>
+        <button class="custom-confirm-btn" id="customConfirmBtn">Выбрать</button>
+      </div>
+    </div>
+  </div>
+
   <div class="container selection-page">
-    <!-- НОВЫЙ ЗАГОЛОВОК С БУРГЕР-МЕНЮ -->
     <div class="header-with-menu">
       <h1 id="page-title">Приобретение Монет</h1>
       <div class="burger-menu">
@@ -723,6 +895,7 @@
       <p class="section-title" id="replenishment-title">Пополнение</p>
       <div id="packs" class="packs-grid"></div>
     </div>
+    
     <div class="buy-wrap">
       <button id="buyBtn" class="buy-btn">Пополнение</button>
     </div>
@@ -833,7 +1006,14 @@
         statusSuccess: "Успешно",
         done: "Готово",
         enterUsername: "Введите тег получателя перед покупкой!",
-        selectPayment: "Пожалуйста, выберите способ оплаты!"
+        selectPayment: "Пожалуйста, выберите способ оплаты!",
+        customAmountTitle: "Свое количество",
+        customModalTitle: "Введите количество монет",
+        customInputPlaceholder: "0",
+        customPriceText: "Стоимость:",
+        customCancel: "Отмена",
+        customConfirm: "Выбрать",
+        enterCoins: "Введите количество монет или выберите пакет!"
       },
       en: {
         pageTitle: "Coin Purchase",
@@ -856,7 +1036,14 @@
         statusSuccess: "Success",
         done: "Done",
         enterUsername: "Enter recipient tag before purchase!",
-        selectPayment: "Please select payment method!"
+        selectPayment: "Please select payment method!",
+        customAmountTitle: "Custom Amount",
+        customModalTitle: "Enter number of coins",
+        customInputPlaceholder: "0",
+        customPriceText: "Price:",
+        customCancel: "Cancel",
+        customConfirm: "Select",
+        enterCoins: "Enter number of coins or select a package!"
       }
     };
 
@@ -873,8 +1060,12 @@
       { coins: 17500, price: 300.0 },
     ];
 
+    // Расчет цены за 1 монету (берем среднюю стоимость из всех пакетов)
+    const averagePricePerCoin = packs.reduce((sum, pack) => sum + (pack.price / pack.coins), 0) / packs.length;
+    
     let selected = packs[0].coins;
     let selectedPaymentMethod = null;
+    let isCustomAmount = false;
     const packsContainer = document.getElementById("packs");
     const selectionPage = document.querySelector('.selection-page');
     const orderSummary = document.querySelector('.order-summary');
@@ -889,6 +1080,14 @@
     const languageDropdown = document.getElementById('languageDropdown');
     const menuOverlay = document.getElementById('menuOverlay');
     const langOptions = document.querySelectorAll('.lang-option');
+
+    // ЭЛЕМЕНТЫ КАСТОМНОГО МОДАЛЬНОГО ОКНА
+    const customModalOverlay = document.getElementById('customModalOverlay');
+    const customInput = document.getElementById('customInput');
+    const customPriceValue = document.getElementById('custom-price-value');
+    const customCancelBtn = document.getElementById('customCancelBtn');
+    const customConfirmBtn = document.getElementById('customConfirmBtn');
+    const customKeys = document.querySelectorAll('.custom-key');
 
     // ФУНКЦИИ ДЛЯ БУРГЕР-МЕНЮ
     function toggleMenu() {
@@ -939,6 +1138,11 @@
       document.getElementById('status-label').textContent = translations[lang].status;
       document.getElementById('status-value').textContent = translations[lang].statusSuccess;
       document.getElementById('doneBtn').textContent = translations[lang].done;
+      document.getElementById('custom-modal-title').textContent = translations[lang].customModalTitle;
+      document.getElementById('customInput').placeholder = translations[lang].customInputPlaceholder;
+      document.getElementById('custom-price-display').innerHTML = `${translations[lang].customPriceText} <span class="custom-price-value" id="custom-price-value">0.00 $</span>`;
+      document.getElementById('customCancelBtn').textContent = translations[lang].customCancel;
+      document.getElementById('customConfirmBtn').textContent = translations[lang].customConfirm;
       
       // Обновляем активную опцию в меню
       langOptions.forEach(option => {
@@ -975,10 +1179,113 @@
       return p.toFixed(2) + " $";
     }
 
+    // Функция для расчета цены кастомного количества монет
+    function calculateCustomPrice(coins) {
+      // Используем прогрессивную цену: чем больше монет, тем дешевле каждая
+      let pricePerCoin = averagePricePerCoin;
+      
+      if (coins >= 10000) {
+        pricePerCoin = averagePricePerCoin * 0.85; // Скидка 15% для больших заказов
+      } else if (coins >= 5000) {
+        pricePerCoin = averagePricePerCoin * 0.9; // Скидка 10%
+      } else if (coins >= 1000) {
+        pricePerCoin = averagePricePerCoin * 0.95; // Скидка 5%
+      }
+      
+      return coins * pricePerCoin;
+    }
+
+    // Обновление цены в кастомном модальном окне
+    function updateCustomPrice() {
+      const coins = parseInt(customInput.value.replace(/\s/g, '')) || 0;
+      if (coins > 0) {
+        const price = calculateCustomPrice(coins);
+        customPriceValue.textContent = formatPrice(price);
+      } else {
+        customPriceValue.textContent = "0.00 $";
+      }
+    }
+
+    // Открытие кастомного модального окна
+    function openCustomModal() {
+      customInput.value = "";
+      updateCustomPrice();
+      customModalOverlay.classList.add('show');
+    }
+
+    // Закрытие кастомного модального окна
+    function closeCustomModal() {
+      customModalOverlay.classList.remove('show');
+    }
+
+    // Обработчики для кастомного модального окна
+    customCancelBtn.addEventListener('click', closeCustomModal);
+    
+    customConfirmBtn.addEventListener('click', () => {
+      const coins = parseInt(customInput.value.replace(/\s/g, '')) || 0;
+      if (coins > 0) {
+        selected = coins;
+        isCustomAmount = true;
+        
+        // Снимаем выделение с других пакетов
+        document.querySelectorAll(".pack").forEach(p => {
+          p.classList.remove("selected");
+        });
+        
+        // Выделяем кастомный пакет
+        const customPack = document.querySelector('.custom-pack');
+        if (customPack) {
+          customPack.classList.add("selected");
+        }
+        
+        closeCustomModal();
+      }
+    });
+
+    // Обработчики для клавиш кастомного ввода
+    customKeys.forEach(key => {
+      key.addEventListener('click', () => {
+        const keyValue = key.dataset.key;
+        
+        if (keyValue === 'delete') {
+          // Удаление последнего символа
+          customInput.value = customInput.value.slice(0, -1);
+        } else {
+          // Добавление цифры
+          customInput.value += keyValue;
+        }
+        
+        // Форматирование числа с пробелами
+        const numericValue = customInput.value.replace(/\s/g, '');
+        if (numericValue) {
+          customInput.value = parseInt(numericValue).toLocaleString('ru-RU');
+        }
+        
+        updateCustomPrice();
+      });
+    });
+
+    // Создание элемента кастомного пакета
+    function createCustomPackElement() {
+      const el = document.createElement("div");
+      el.className = "pack custom-pack";
+      el.innerHTML = `
+        <img src="e0b810e57ba3977744f9cfc8fab7975a.jpg" alt="coin" class="coin">
+        <div class="coins-count">${translations[currentLang].customAmountTitle}</div>
+        <div class="price">${translations[currentLang].customPriceText}</div>
+      `;
+      
+      el.addEventListener("click", () => {
+        openCustomModal();
+      });
+      
+      return el;
+    }
+
     function createPackElement(pack) {
       const el = document.createElement("div");
       el.className = "pack";
-      if (pack.coins === selected) el.classList.add("selected");
+      if (pack.coins === selected && !isCustomAmount) el.classList.add("selected");
       el.innerHTML = `
         <img src="e0b810e57ba3977744f9cfc8fab7975a.jpg" alt="coin" class="coin">
         <div class="coins-count">${pack.coins}</div>
@@ -989,6 +1296,8 @@
         
         setTimeout(() => {
           selected = pack.coins;
+          isCustomAmount = false;
+          
           document.querySelectorAll(".pack").forEach(p => {
             p.classList.remove("selected");
             p.classList.remove("pack-loading");
@@ -999,7 +1308,9 @@
       return el;
     }
 
+    // Создаем пакеты и добавляем кастомный пакет
     packs.forEach(pack => packsContainer.appendChild(createPackElement(pack)));
+    packsContainer.appendChild(createCustomPackElement());
 
     paymentMethods.forEach(method => {
       method.addEventListener('click', () => {
@@ -1023,6 +1334,12 @@
         return;
       }
 
+      // Проверяем, что выбрано количество монет
+      if (!selected) {
+        alert(translations[currentLang].enterCoins);
+        return;
+      }
+
       selectionPage.style.display = "none";
       loader1.style.display = "flex";
 
@@ -1030,9 +1347,18 @@
         loader1.style.display = "none";
         orderSummary.style.display = "block";
 
-        const selectedPack = packs.find(p => p.coins === selected);
+        let selectedPack;
+        if (isCustomAmount) {
+          selectedPack = {
+            coins: selected,
+            price: calculateCustomPrice(selected)
+          };
+        } else {
+          selectedPack = packs.find(p => p.coins === selected);
+        }
+        
         document.getElementById("order-username").textContent = username;
-        document.getElementById("order-coins").textContent = selectedPack.coins;
+        document.getElementById("order-coins").textContent = selectedPack.coins.toLocaleString('ru-RU');
         document.getElementById("order-price").textContent = formatPrice(selectedPack.price);
       }, 1500);
     });
@@ -1085,10 +1411,19 @@
                 loader2.style.display = "none";
                 successPage.style.display = "flex";
 
-                const selectedPack = packs.find(p => p.coins === selected);
+                let selectedPack;
+                if (isCustomAmount) {
+                  selectedPack = {
+                    coins: selected,
+                    price: calculateCustomPrice(selected)
+                  };
+                } else {
+                  selectedPack = packs.find(p => p.coins === selected);
+                }
+                
                 const username = document.getElementById("username").value.trim();
                 document.getElementById("success-username").textContent = username;
-                document.getElementById("success-coins").textContent = selectedPack.coins;
+                document.getElementById("success-coins").textContent = selectedPack.coins.toLocaleString('ru-RU');
                 document.getElementById("success-price").textContent = formatPrice(selectedPack.price);
                 document.getElementById("success-payment").textContent =
                   selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
@@ -1103,8 +1438,17 @@
       successPage.style.display = "none";
       selectionPage.style.display = "block";
       document.getElementById("username").value = "";
+      
       paymentMethods.forEach(m => m.classList.remove("selected"));
       selectedPaymentMethod = null;
+      isCustomAmount = false;
+      
+      // Выбираем первый пакет по умолчанию
+      selected = packs[0].coins;
+      document.querySelectorAll(".pack").forEach(p => {
+        p.classList.remove("selected");
+      });
+      document.querySelectorAll(".pack")[0].classList.add("selected");
     });
 
     // Инициализация языка при загрузке
