@@ -322,6 +322,7 @@
       color: var(--muted);
       font-size: 14px;
       min-height: 20px;
+      transition: opacity 0.3s ease;
     }
 
     @keyframes spin {
@@ -754,26 +755,54 @@
 
       orderSummary.style.display = "none";
       loader2.style.display = "flex";
+      
+      // ФИКС 1: Сбрасываем текст перед началом
       loader2Text.textContent = "Получаем карту...";
+      loader2Text.style.opacity = "1";
 
-      setTimeout(() => {
-        loader2Text.textContent = "Обрабатываем платёж...";
-
+      // ФИКС 2: Убираем вложенные setTimeout и используем промисы для надежности
+      const processPayment = async () => {
+        // Этап 1: Получаем карту
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // ФИКС 3: Плавное изменение текста
+        loader2Text.style.opacity = "0";
         setTimeout(() => {
+          loader2Text.textContent = "Обрабатываем платёж...";
+          loader2Text.style.opacity = "1";
+        }, 300);
+
+        // Этап 2: Обрабатываем платеж
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // ФИКС 4: Плавное скрытие текста перед заменой
+        loader2Text.style.opacity = "0";
+        
+        setTimeout(() => {
+          // ФИКС 5: Сохраняем ссылки на элементы перед заменой
+          const currentLoader = loader2.querySelector('.loader');
+          const currentText = loader2.querySelector('.loader-text');
+          
+          // Заменяем содержимое
           loader2.innerHTML = `
             <div class="success-check">
               <div class="checkmark"></div>
             </div>
-            <div class="loader-text" style="color:#10b981;font-weight:600;">Готово!</div>
+            <div class="loader-text" style="color:#10b981;font-weight:600;opacity:1">Готово!</div>
           `;
 
+          // ФИКС 6: Переходим к успеху после короткой задержки
           setTimeout(() => {
-            loader2.style.display = "none";
+            // Восстанавливаем оригинальную разметку loader2
             loader2.innerHTML = `
               <div class="loader"></div>
               <div class="loader-text" id="loader2Text">Получаем карту...</div>
             `;
-
+            
+            // Обновляем ссылку на текстовый элемент
+            loader2Text = document.getElementById('loader2Text');
+            
+            loader2.style.display = "none";
             successPage.style.display = "flex";
 
             const selectedPack = packs.find(p => p.coins === selected);
@@ -784,8 +813,10 @@
             document.getElementById("success-payment").textContent =
               selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
           }, 1000);
-        }, 2000);
-      }, 2000);
+        }, 300);
+      };
+
+      processPayment();
     });
 
     document.getElementById("doneBtn").addEventListener("click", () => {
