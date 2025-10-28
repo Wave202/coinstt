@@ -1138,11 +1138,16 @@
       document.getElementById('status-label').textContent = translations[lang].status;
       document.getElementById('status-value').textContent = translations[lang].statusSuccess;
       document.getElementById('doneBtn').textContent = translations[lang].done;
+      
+      // Обновляем кастомное модальное окно
       document.getElementById('custom-modal-title').textContent = translations[lang].customModalTitle;
       document.getElementById('customInput').placeholder = translations[lang].customInputPlaceholder;
       document.getElementById('custom-price-display').innerHTML = `${translations[lang].customPriceText} <span class="custom-price-value" id="custom-price-value">0.00 $</span>`;
       document.getElementById('customCancelBtn').textContent = translations[lang].customCancel;
       document.getElementById('customConfirmBtn').textContent = translations[lang].customConfirm;
+      
+      // Обновляем кастомный пакет в сетке
+      updateCustomPackText();
       
       // Обновляем активную опцию в меню
       langOptions.forEach(option => {
@@ -1154,6 +1159,15 @@
 
       // Закрываем меню после выбора языка
       closeMenu();
+    }
+
+    // Функция для обновления текста кастомного пакета
+    function updateCustomPackText() {
+      const customPack = document.querySelector('.custom-pack');
+      if (customPack) {
+        customPack.querySelector('.coins-count').textContent = translations[currentLang].customAmountTitle;
+        customPack.querySelector('.price').textContent = translations[currentLang].customPriceText;
+      }
     }
 
     // ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ БУРГЕР-МЕНЮ
@@ -1179,6 +1193,30 @@
       return p.toFixed(2) + " $";
     }
 
+    // Функция для форматирования больших чисел
+    function formatLargeNumber(numStr, lang) {
+      // Удаляем все нецифровые символы
+      const cleanNum = numStr.replace(/\D/g, '');
+      
+      // Разбиваем на группы по 3 цифры с конца
+      let result = '';
+      let count = 0;
+      
+      for (let i = cleanNum.length - 1; i >= 0; i--) {
+        if (count > 0 && count % 3 === 0) {
+          if (lang === 'ru') {
+            result = ' ' + result;
+          } else {
+            result = ',' + result;
+          }
+        }
+        result = cleanNum[i] + result;
+        count++;
+      }
+      
+      return result;
+    }
+
     // Функция для расчета цены кастомного количества монет
     function calculateCustomPrice(coins) {
       // Используем прогрессивную цену: чем больше монет, тем дешевле каждая
@@ -1197,9 +1235,10 @@
 
     // Обновление цены в кастомном модальном окне
     function updateCustomPrice() {
-      const coins = parseInt(customInput.value.replace(/\s/g, '')) || 0;
+      const coinsStr = customInput.value.replace(/[^\d]/g, '');
+      const coins = coinsStr ? BigInt(coinsStr) : 0n;
       if (coins > 0) {
-        const price = calculateCustomPrice(coins);
+        const price = calculateCustomPrice(Number(coins));
         customPriceValue.textContent = formatPrice(price);
       } else {
         customPriceValue.textContent = "0.00 $";
@@ -1222,7 +1261,8 @@
     customCancelBtn.addEventListener('click', closeCustomModal);
     
     customConfirmBtn.addEventListener('click', () => {
-      const coins = parseInt(customInput.value.replace(/\s/g, '')) || 0;
+      const coinsStr = customInput.value.replace(/[^\d]/g, '');
+      const coins = coinsStr ? Number(BigInt(coinsStr)) : 0;
       if (coins > 0) {
         selected = coins;
         isCustomAmount = true;
@@ -1256,9 +1296,9 @@
         }
         
         // Форматирование числа с пробелами
-        const numericValue = customInput.value.replace(/\s/g, '');
+        const numericValue = customInput.value.replace(/[^\d]/g, '');
         if (numericValue) {
-          customInput.value = parseInt(numericValue).toLocaleString('ru-RU');
+          customInput.value = formatLargeNumber(numericValue, currentLang);
         }
         
         updateCustomPrice();
@@ -1358,7 +1398,7 @@
         }
         
         document.getElementById("order-username").textContent = username;
-        document.getElementById("order-coins").textContent = selectedPack.coins.toLocaleString('ru-RU');
+        document.getElementById("order-coins").textContent = selectedPack.coins.toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US');
         document.getElementById("order-price").textContent = formatPrice(selectedPack.price);
       }, 1500);
     });
@@ -1423,7 +1463,7 @@
                 
                 const username = document.getElementById("username").value.trim();
                 document.getElementById("success-username").textContent = username;
-                document.getElementById("success-coins").textContent = selectedPack.coins.toLocaleString('ru-RU');
+                document.getElementById("success-coins").textContent = selectedPack.coins.toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US');
                 document.getElementById("success-price").textContent = formatPrice(selectedPack.price);
                 document.getElementById("success-payment").textContent =
                   selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
