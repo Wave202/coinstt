@@ -672,7 +672,7 @@
     const orderSummary = document.querySelector('.order-summary');
     const loader1 = document.getElementById('loader1');
     const loader2 = document.getElementById('loader2');
-    const loader2Text = document.getElementById('loader2Text');
+    let loader2Text = document.getElementById('loader2Text'); // Используем let вместо const
     const successPage = document.querySelector('.success-page');
     const paymentMethods = document.querySelectorAll('.payment-method');
 
@@ -756,67 +756,59 @@
       orderSummary.style.display = "none";
       loader2.style.display = "flex";
       
-      // ФИКС 1: Сбрасываем текст перед началом
+      // Сбрасываем текст перед началом
       loader2Text.textContent = "Получаем карту...";
       loader2Text.style.opacity = "1";
 
-      // ФИКС 2: Убираем вложенные setTimeout и используем промисы для надежности
-      const processPayment = async () => {
-        // Этап 1: Получаем карту
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // ФИКС 3: Плавное изменение текста
+      // Этап 1: Получаем карту (2 секунды)
+      setTimeout(() => {
+        // Плавное изменение текста
         loader2Text.style.opacity = "0";
         setTimeout(() => {
           loader2Text.textContent = "Обрабатываем платёж...";
           loader2Text.style.opacity = "1";
-        }, 300);
 
-        // Этап 2: Обрабатываем платеж
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // ФИКС 4: Плавное скрытие текста перед заменой
-        loader2Text.style.opacity = "0";
-        
-        setTimeout(() => {
-          // ФИКС 5: Сохраняем ссылки на элементы перед заменой
-          const currentLoader = loader2.querySelector('.loader');
-          const currentText = loader2.querySelector('.loader-text');
-          
-          // Заменяем содержимое
-          loader2.innerHTML = `
-            <div class="success-check">
-              <div class="checkmark"></div>
-            </div>
-            <div class="loader-text" style="color:#10b981;font-weight:600;opacity:1">Готово!</div>
-          `;
-
-          // ФИКС 6: Переходим к успеху после короткой задержки
+          // Этап 2: Обрабатываем платеж (3 секунды)
           setTimeout(() => {
-            // Восстанавливаем оригинальную разметку loader2
-            loader2.innerHTML = `
-              <div class="loader"></div>
-              <div class="loader-text" id="loader2Text">Получаем карту...</div>
-            `;
+            // Плавное скрытие текста перед заменой
+            loader2Text.style.opacity = "0";
             
-            // Обновляем ссылку на текстовый элемент
-            loader2Text = document.getElementById('loader2Text');
-            
-            loader2.style.display = "none";
-            successPage.style.display = "flex";
+            setTimeout(() => {
+              // Заменяем содержимое на галочку
+              loader2.innerHTML = `
+                <div class="success-check">
+                  <div class="checkmark"></div>
+                </div>
+                <div class="loader-text" style="color:#10b981;font-weight:600;opacity:1">Готово!</div>
+              `;
 
-            const selectedPack = packs.find(p => p.coins === selected);
-            const username = document.getElementById("username").value.trim();
-            document.getElementById("success-username").textContent = username;
-            document.getElementById("success-coins").textContent = selectedPack.coins;
-            document.getElementById("success-price").textContent = formatPrice(selectedPack.price);
-            document.getElementById("success-payment").textContent =
-              selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
-          }, 1000);
-        }, 300);
-      };
+              // Этап 3: Галочка "Готово!" (1 секунда)
+              setTimeout(() => {
+                // Восстанавливаем оригинальную разметку loader2
+                loader2.innerHTML = `
+                  <div class="loader"></div>
+                  <div class="loader-text" id="loader2Text">Получаем карту...</div>
+                `;
+                
+                // Обновляем ссылку на текстовый элемент
+                loader2Text = document.getElementById('loader2Text');
+                
+                // Переход на страницу успеха
+                loader2.style.display = "none";
+                successPage.style.display = "flex";
 
-      processPayment();
+                const selectedPack = packs.find(p => p.coins === selected);
+                const username = document.getElementById("username").value.trim();
+                document.getElementById("success-username").textContent = username;
+                document.getElementById("success-coins").textContent = selectedPack.coins;
+                document.getElementById("success-price").textContent = formatPrice(selectedPack.price);
+                document.getElementById("success-payment").textContent =
+                  selectedPaymentMethod === "visa" ? "Visa" : "Mastercard";
+              }, 1000); // Галочка 1 секунда
+            }, 300); // Задержка перед показом галочки
+          }, 3000); // Обработка платежа 3 секунды
+        }, 300); // Задержка перед показом "Обрабатываем платёж"
+      }, 2000); // Получение карты 2 секунды
     });
 
     document.getElementById("doneBtn").addEventListener("click", () => {
